@@ -1,0 +1,76 @@
+2024-04-21 02:01:26,478 - root - INFO - Logger setup complete with file logging
+2024-04-21 02:01:28,347 - root - INFO - Star clenaing time
+2024-04-21 02:01:45,079 - root - INFO - Stop cleanign times
+2024-04-21 02:01:45,079 - root - INFO - Starting merges
+2024-04-21 02:01:45,081 - root - INFO -        route_id service_id  trip_id     trip_headsign  trip_short_name  direction_id  block_id  shape_id  wheelchair_accessible  bikes_allowed route_short_name
+0         19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470
+1         19930    293.0.2  5307113             Ogden              NaN             0   1167263    230484                      1              1              470
+2         19930    293.0.2  5307114             Ogden              NaN             0   1167261    230484                      1              1              470
+3         19930    293.0.2  5307115             Ogden              NaN             0   1167260    230484                      1              1              470
+4         19930    293.0.2  5307116             Ogden              NaN             0   1167266    230484                      1              1              470
+...         ...        ...      ...               ...              ...           ...       ...       ...                    ...            ...              ...
+10396     93045    293.0.4  5327281  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39
+10397     93045    293.0.4  5327282  Olympus Cove P+R              NaN             1   1168862    231438                      1              1               39
+10398     93045    293.0.4  5327283  Olympus Cove P+R              NaN             1   1168859    231438                      1              1               39
+10399     93045    293.0.4  5327284  Olympus Cove P+R              NaN             1   1168861    231438                      1              1               39
+10400     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39
+
+[10401 rows x 11 columns]
+2024-04-21 02:01:45,157 - root - INFO -         route_id service_id  trip_id     trip_headsign  trip_short_name  direction_id  block_id  shape_id  wheelchair_accessible  bikes_allowed route_short_name arrival_time  stop_id
+0          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:45:00     5502
+1          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:46:05    13095
+2          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:47:00     5504
+3          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:47:31    13192
+4          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:48:43    21929
+...          ...        ...      ...               ...              ...           ...       ...       ...                    ...            ...              ...          ...      ...
+442713     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:37:41    18677
+442714     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:38:09    17526
+442715     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:39:00    17527
+442716     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:40:06    23916
+442717     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:41:00    22257
+
+[442718 rows x 13 columns]
+2024-04-21 02:01:45,238 - root - INFO -         route_id service_id  trip_id     trip_headsign  trip_short_name  direction_id  block_id  shape_id  wheelchair_accessible  bikes_allowed route_short_name arrival_time  stop_id                     stop_name   stop_lat    stop_lon
+0          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:45:00     5502         State St / 400 S (NB)  40.761431 -111.888044
+1          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:46:05    13095         State St / 300 S (NB)  40.763556 -111.888072
+2          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:47:00     5504         State St / 150 S (NB)  40.765870 -111.888062
+3          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:47:31    13192          State St / 50 S (NB)  40.767803 -111.888086
+4          19930    293.0.2  5307112             Ogden              NaN             0   1167267    230484                      1              1              470     05:48:43    21929  North Temple / State St (WB)  40.771666 -111.889348
+...          ...        ...      ...               ...              ...           ...       ...       ...                    ...            ...              ...          ...      ...                           ...        ...         ...
+442713     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:37:41    18677               3900 S @ 2858 E  40.686947 -111.811339
+442714     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:38:09    17526               3900 S @ 2944 E  40.686960 -111.809064
+442715     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:39:00    17527               3900 S @ 3080 E  40.686988 -111.805040
+442716     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:40:06    23916               3900 S @ 3290 E  40.686964 -111.799829
+442717     93045    293.0.4  5327285  Olympus Cove P+R              NaN             1   1168860    231438                      1              1               39     00:41:00    22257      Olympus Cove P+R (Bay E)  40.687589 -111.796633
+
+[442718 rows x 16 columns]
+2024-04-21 02:01:45,370 - root - INFO -         stop_id route_short_name        stop_name           trip_headsign   stop_lat    stop_lon arrival_time
+256491      391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     05:32:21
+37000       391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     05:40:21
+256547      391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     06:02:21
+256603      391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     06:34:21
+37056       391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     06:40:21
+...         ...              ...              ...                     ...        ...         ...          ...
+369363    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     19:08:28
+369392    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     19:38:28
+122292    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     19:58:28
+369421    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     20:08:28
+369450    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     20:38:28
+
+[442718 rows x 7 columns]
+2024-04-21 02:01:45,374 - root - INFO - Merges end
+2024-04-21 02:01:45,558 - root - INFO - Expected route punctuality:          stop_id route_short_name        stop_name           trip_headsign   stop_lat    stop_lon arrival_time
+256491      391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     05:32:21
+37000       391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     05:40:21
+256547      391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     06:02:21
+256603      391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     06:34:21
+37056       391              240  4015 W @ 4878 S   Jordan Valley Station  40.663345 -111.987053     06:40:21
+...         ...              ...              ...                     ...        ...         ...          ...
+369363    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     19:08:28
+369392    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     19:38:28
+122292    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     19:58:28
+369421    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     20:08:28
+369450    25451             F578  7800 S / 5471 W  Midvale Center Station  40.609325 -112.020236     20:38:28
+
+[442718 rows x 7 columns]
+2024-04-21 02:01:45,643 - root - INFO - Unique dates found in bus locations data: ['04/11/24']
