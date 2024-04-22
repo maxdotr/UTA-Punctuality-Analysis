@@ -5,6 +5,7 @@ import pandas as pd
 from geopy.distance import geodesic
 from datetime import datetime, timedelta, time
 import numpy as np
+import csv
 import os
 
 # Setup logger root
@@ -54,7 +55,7 @@ df_routes = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Punctuali
 df_stop_times = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Punctuality-Analysis/main/stop_times.csv')
 df_stops = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Punctuality-Analysis/main/stops.csv')
 df_trips = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Punctuality-Analysis/main/trips.csv')
-bus_locations_df = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Punctuality-Analysis/main/bustimes-small-sample.csv', low_memory=False)
+bus_locations_df = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Punctuality-Analysis/main/bustimes04242024.csv', low_memory=False)
 
 # Adjust the time handling function - data between df's is different
 def clean_and_convert_time(time_str):
@@ -99,11 +100,12 @@ def find_closest_approach(bus_df, stop):
 
 def parse_date(date_str):
     try:
-        # Attempt to parse the date assuming 'dd/mm/yy'
-        return datetime.strptime(date_str, "%d/%m/%y").date()
+        # Adjust format to match 'mm/dd/yy'
+        return datetime.strptime(date_str, "%m/%d/%y").date()
     except ValueError:
+        # Log an error if the date format is incorrect
         logging.error("Date format error for date: %s", date_str)
-        return None 
+        return None
 
 # Calculates interval for calculations
 def calculate_operational_intervals(scheduled_times):
@@ -190,6 +192,7 @@ def match_times(bus_df, stop_info, scheduled_times):
                         'distance_to_stop': closest_bus['distance_to_stop'],
                         'match_date': current_date
                     }
+                    writer.writerow(matched_time)
                     matched_times.append(matched_time)
                     used_indices.add(closest_bus.name)
 
@@ -202,6 +205,19 @@ def match_times(bus_df, stop_info, scheduled_times):
 
     return matched_times
 
+def setup_csv_writer():
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    filename = f"match_results_{timestamp}.csv"
+    file = open(filename, 'w', newline='', encoding='utf-8')
+    writer = csv.DictWriter(file, fieldnames=[
+        'vehicle_id', 'stop_id', 'stop_name', 'route', 'destination',
+        'scheduled_arrival_time', 'actual_arrival_time', 'distance_to_stop', 'match_date'
+    ])
+    writer.writeheader()
+    return file, writer
+
+def close_csv_file(file):
+    file.close()
 
 
 
@@ -224,6 +240,8 @@ logging.info("Expected route punctuality:  %s", expected_route_punctuality_df)
 all_results = []
 grouped = expected_route_punctuality_df.groupby(['stop_id', 'route_short_name', 'trip_headsign'])
 
+file, writer = setup_csv_writer()
+
 for name, group in grouped:
     stop_info = {
         'stop_id': name[0],
@@ -238,6 +256,8 @@ for name, group in grouped:
     
     results = match_times(bus_locations_df, stop_info, scheduled_times)
     all_results.extend(results)
+
+close_csv_file(file)
 
 # Convert all results to a DataFrame for analysis
 final_results_df = pd.DataFrame(all_results)
