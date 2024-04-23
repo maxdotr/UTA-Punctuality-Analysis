@@ -61,8 +61,10 @@ bus_locations_df = pd.read_csv('https://raw.githubusercontent.com/maxdotr/UTA-Pu
 def clean_and_convert_time(time_str):
     time_str = time_str.strip().replace('24:', '00:')
     dt = pd.to_datetime(time_str, format='%H:%M:%S', errors='coerce')
+    #UTA List times PAST midnight in the format 24:XX:XX <- Which is not standard time format
+    #Since this is out of the scope of when we tracked our data (6AM-9PM), we can just throw it out
     if pd.isna(dt):
-        return None  # Skip or handle invalid times
+        return None 
     return dt.time()
 
 
@@ -112,7 +114,7 @@ def calculate_operational_intervals(scheduled_times):
     arbitrary_date = datetime(2000, 1, 1)
     datetime_list = [datetime.combine(arbitrary_date, t) for t in scheduled_times if isinstance(t, time)]
 
-    # Assuming operational hours are from 6 AM to 10 PM
+    # Tracking from 6AM-9PM
     operational_start = datetime.combine(arbitrary_date, time(6, 0))
     operational_end = datetime.combine(arbitrary_date, time(21, 0))
 
@@ -123,6 +125,8 @@ def calculate_operational_intervals(scheduled_times):
     intervals = [(operational_times[i] - operational_times[i-1]).total_seconds() / 60 for i in range(1, len(operational_times))]
     logging.debug("Stop interval: %s", np.median(intervals))
     if intervals:
+        #UTA Only has intervals scheduled in 30 minutes and 15 minute incremements, other interval times
+        # are due to variance
         if(np.median(intervals) >= 30.0):
             return 30.0 
         else:
@@ -130,6 +134,8 @@ def calculate_operational_intervals(scheduled_times):
     else:
         return 15 
 
+#Match the times - for each scheduled time, for each unique date (stop times repeat daily), on an interval defined by the frequency of the route, select buses 
+#with matching info, then calculate the actual stop time by finding the closest bus to the stop on the defined interval
 def match_times(bus_df, stop_info, scheduled_times):
     matched_times = []
     unique_dates = bus_df['date'].dropna().unique()
@@ -139,13 +145,14 @@ def match_times(bus_df, stop_info, scheduled_times):
     average_interval = calculate_operational_intervals(scheduled_times)
     half_interval = average_interval / 2
 
+    #Stop times repeat daily - collected bus times have unique dates
     for unique_date in unique_dates:
         current_date = parse_date(unique_date)
         if current_date is None:
-            continue  # Skip processing if date parsing failed
+            continue  
 
         daily_bus_df = bus_df[bus_df['date'] == unique_date]
-        used_indices = set()  # Set to track indices of matched bus entries
+        used_indices = set()  
 
         logging.debug("Processing matches for date: %s", current_date)
 
@@ -172,6 +179,7 @@ def match_times(bus_df, stop_info, scheduled_times):
                 time_window_start = time_window_start.time()
                 time_window_end = time_window_end.time()
 
+                #create a dataframe for matching buses
                 temp_df = daily_bus_df[
                     (daily_bus_df['time'] >= time_window_start) &
                     (daily_bus_df['time'] <= time_window_end) &
@@ -180,7 +188,9 @@ def match_times(bus_df, stop_info, scheduled_times):
                 ].copy()
 
                 if not temp_df.empty:
+                    #find the closest approach
                     closest_bus = find_closest_approach(temp_df, stop_info)
+                    #creatae a row
                     matched_time = {
                         'vehicle_id': closest_bus['vehicleID'],
                         'stop_id': stop_info['stop_id'],
@@ -192,6 +202,7 @@ def match_times(bus_df, stop_info, scheduled_times):
                         'distance_to_stop': closest_bus['distance_to_stop'],
                         'match_date': current_date
                     }
+                    #write to backup CSV for case of crashes
                     writer.writerow(matched_time)
                     matched_times.append(matched_time)
                     used_indices.add(closest_bus.name)
@@ -205,6 +216,7 @@ def match_times(bus_df, stop_info, scheduled_times):
 
     return matched_times
 
+#CSV set up - runs too long, need to not lose data
 def setup_csv_writer():
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     filename = f"match_results_{timestamp}.csv"
@@ -218,10 +230,6 @@ def setup_csv_writer():
 
 def close_csv_file(file):
     file.close()
-
-
-
-
 
 # Convert times in expected_route_punctuality_df
 expected_route_punctuality_df['arrival_time'] = pd.to_datetime(expected_route_punctuality_df['arrival_time'], format='%H:%M:%S').dt.time
@@ -267,15 +275,11 @@ final_results_df = pd.DataFrame(all_results)
 print(final_results_df.head())
 
 
-# Assuming final_results_df['actual_arrival_time'] and final_results_df['scheduled_arrival_time'] are in datetime.time format
+# Find the difference from actual arrival time 
 def compute_time_difference(row):
-    # Choose an arbitrary date for converting time to datetime
-    arbitrary_date = datetime(2000, 1, 1)  # Y2K why not?!
-    # Combine time with arbitrary date
+    arbitrary_date = datetime(2000, 1, 1) 
     actual_datetime = datetime.combine(arbitrary_date, row['actual_arrival_time'])
     scheduled_datetime = datetime.combine(arbitrary_date, row['scheduled_arrival_time'])
-    
-    # Calculate time difference
     time_difference = actual_datetime - scheduled_datetime
     return time_difference.total_seconds() / 60
 
@@ -285,7 +289,6 @@ final_results_df['time_difference'] = final_results_df.apply(compute_time_differ
 # Print discrepancies over a threshold (e.g., over 5 minutes)
 print(final_results_df)
 
-# Generate timestamped file name
 timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 file_name = f"final_results_{timestamp}.csv"
 
